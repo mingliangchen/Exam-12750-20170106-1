@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hand.dao.FilmMapper" >
+  <select id="selectAllFilm" resultType="Film" parameterType="Film">
+    SELECT
+        f.film_id,
+        f.title,
+        f.description,
+        l.name as "language.name"
+      FROM
+        film f ,language l WHERE f.language_id=l.language_id
+      <if test="filmId !=null">
+            AND film_id LIKE CONCAT('%', CONCAT(#{filmId}, '%'))
+      </if>
+      <if test="title !=null">
+            AND title LIKE CONCAT('%', CONCAT(#{title}, '%'))
+        </if> 
+  </select>
+  <delete id="deleteById" parameterType="short">
+       delete from film where film_id=#{filmId}
+  </delete>
+  <insert id="insertFilm" >
+        insert into film (title,description,language_id) 
+        values(#{title},#{description},#{languageId})
+    </insert>
+    
+    
+    <update id="updateFilm" >
+        update film set title=#{title},
+                        description=#{description},
+                        language_id=#{languageId} where film_id=#{filmId}
+    </update>
+    <select id="getOneFilm" parameterType="Short" resultType="Film">
+        SELECT
+        film_id, 
+        title,
+        description,
+        language_id as "language.languageId"
+      FROM
+        film  WHERE film_id=#{filmId} 
+    </select>
+    <delete id="deteleById" parameterType="Short">
+        delete from film where film_id =#{filmId}
+    </delete>
+</mapper>

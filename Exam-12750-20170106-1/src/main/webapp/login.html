@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="../bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet"
+    href="https://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+    <div class="container">
+            <div class="panel-heading text-center">
+               INSERT
+            </div>
+    <div class="row clearfix">
+        <div class="col-md-6 column">
+                name:<input type="text" name="first_name" id="firstName">
+                
+                <button class="btn" id="login" >Login</button>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+  $("#login").click(function(){
+	  var url="/hand/login";
+	  var firstName=$("#firstName").val();
+	  $.get(url,{first_name:firstName},function(data){
+		  
+		 if(date="success"){
+			  window.location.href="/html/filmlist.html";
+		  } 
+		  alert(data);
+	  },'text');
+  });
+
+</script>
+</body>
+</html>

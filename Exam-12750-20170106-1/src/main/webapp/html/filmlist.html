@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="../css/paging.css">
+<link href="../bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet"
+    href="https://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.page.js"></script>
+<style>
+*{ margin:0; padding:0; list-style:none;}
+a{ text-decoration:none;}
+a:hover{ text-decoration:none;}
+.tcdPageCode{padding: 15px 20px;text-align: left;color: #ccc;text-align:center;}
+.tcdPageCode a{display: inline-block;color: #428bca;display: inline-block;height: 25px; line-height: 25px;  padding: 0 10px;border: 1px solid #ddd; margin: 0 2px;border-radius: 4px;vertical-align: middle;}
+.tcdPageCode a:hover{text-decoration: none;border: 1px solid #428bca;}
+.tcdPageCode span.current{display: inline-block;height: 25px;line-height: 25px;padding: 0 10px;margin: 0 2px;color: #fff;background-color: #428bca; border: 1px solid #428bca;border-radius: 4px;vertical-align: middle;}
+.tcdPageCode span.disabled{ display: inline-block;height: 25px;line-height: 25px;padding: 0 10px;margin: 0 2px; color: #bfbfbf;background: #f2f2f2;border: 1px solid #bfbfbf;border-radius: 4px;vertical-align: middle;}
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading text-center">
+                FilmList
+            </div>
+            <div class="well form-search">
+                FilmId:<input id="qfilmId" type="text" class="input-medium search-query">
+                Title<input id="qtitle" type="text" class="input-medium search-query">
+                <button id="query" class="btn btn-info">查询</button>
+                <a  class="btn btn-primary" href="/html/insert.html">INSERT</a>
+                
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>filmId</th>
+                            <th>title</th>
+                            <th>description</th>
+                            <th>language</th>
+                            <th colspan="2">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="filmInfoBody">
+                      
+                    </tbody>
+                </table>
+                <div class="tcdPageCode">
+                </div>
+                    <input type="text" id="pageSize">每页记录数
+                    <input id="tatolPage" style="display: none">
+                    <input id="nowPage" style="display: none">
+                <script>
+	                var url="/film/PageList";
+	                $.getJSON(url,{},function(filmPage){//回调函数
+	                	var tatolPage=filmPage['tatolPage'];
+	                	var nowPage=filmPage['nowPage'];
+	                	var pageSize=filmPage['pageSize'];
+	                	$("#pageSize").val(pageSize);
+	                	$("#tatolPage").val(tatolPage);
+	                	$("#nowPage").val(nowPage);
+	                	var list=filmPage['t'];
+	                    $.each(list, function (index,film) {
+	                        var tbody=$("#filmInfoBody");
+	                        var language=film['language'];
+	                        var Lname=language['name'];
+	                        tbody.append("<tr>");
+	                        tbody.append("<td>" + film["filmId"] + "</td>");
+	                        tbody.append("<td>" + film["title"] + "</td>");
+	                        tbody.append("<td>" + film["description"] + "</td>");
+	                        tbody.append("<td>" + Lname + "</td>");
+	                        tbody.append('<td><a href="javaScript:;" onclick="deletefilm('+film["filmId"]+')" >删除</a></td>');
+	                        tbody.append('<td><a href="#modal-container-833579" role="button" class="btn" data-toggle="modal" onclick="modifyfilm('+film["filmId"]+')">修改</a></td>');
+	                        tbody.append("</tr>");
+	                    });
+	                    
+	                    $(".tcdPageCode").createPage({
+	                        pageCount:$("#tatolPage").val(),
+	                        current:nowPage, 
+	                        backFn:function(p){
+	                        	query(p);
+	                        }
+	                    });
+	                    
+	                });
+	                function query(p){
+                        $("#filmInfoBody").empty();
+	                	var pageSize=$("#pageSize").val();
+                        var qfilmId=$("#qfilmId").val();
+                        var qtitle=$("#qtitle").val();
+                      
+                        var url="/film/PageList";
+                        $.get(url,{offset:p,
+                                  pageSize:pageSize,
+                                  filmId:qfilmId,
+                                  title:qtitle},function(filmPage){//回调函数
+                            var tatolPage=filmPage['tatolPage'];
+                            var nowPage=filmPage['nowPage'];
+                            var pageSize=filmPage['pageSize'];
+                            $("#pageSize").val(pageSize);
+                            $("#tatolPage").val(tatolPage);
+                            $("#nowPage").val(nowPage);
+                            var list=filmPage['t'];
+                            $.each(list, function (index, film) {
+                                var tbody=$("#filmInfoBody");
+                                var language=film['language'];
+                                var Lname=language['name'];
+                                tbody.append("<tr>");
+                                tbody.append("<td>" + film["filmId"] + "</td>");
+                                tbody.append("<td>" + film["title"] + "</td>");
+                                tbody.append("<td>" + film["description"] + "</td>");
+                                tbody.append("<td>" + Lname + "</td>");
+                                tbody.append('<td><a href="javaScript:;" onclick="deletefilm('+film["filmId"]+')">删除</a></td>');
+                                tbody.append('<td><a href="#modal-container-833579" role="button" class="btn" data-toggle="modal" onclick="modifyfilm('+film["filmId"]+')">修改</a></td>');
+                                tbody.append("</tr>");
+                            });
+                            $(".tcdPageCode").createPage({
+                                pageCount:$("#tatolPage").val(),
+                                current:nowPage
+                            });
+                        },"json");
+	                }
+	                $('#query').click(function() {
+	                	var p=$("#nowPage").val();
+	                	query(p);
+	                });
+	               
+	                function modifyfilm(filmId){
+	                	var url2="/film/getfilmById"
+	                		$.getJSON(url2,{filmId:filmId},function(film){//回调函数
+	                			$("#title").val(film['title']);
+	                			$("#description").val(film['description']);
+	                			$("#filmId").val(film['filmId']);
+	                			
+	                        });
+	                	var url="/language/getLanguage";
+	                	   $.getJSON(url,{},function(languages){//回调函数
+	                	       var sel=$("#language");
+	                	       $.each(languages, function (index,lan) {
+	                	           sel.append("<option value="+lan['languageId']+">"+lan['name']+"</option>");
+	                	       });
+	                	   });
+	                }
+	                function deletefilm(filmId){
+                        var url="/film/delete";
+                        $.get(url,{filmId:filmId},function(data){
+                            alert(data);
+                        },'text');
+                   }
+	               $("#pageSize").blur(function(){
+	            	   var p=$("#nowPage").val();
+                       query(p);
+	               });
+                </script>
+                <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-container-833579" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+	<div class="modal-content">
+	<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 class="modal-title" id="myModalLabel" contenteditable="true">update</h4>
+	</div>
+	<div class="modal-body" contenteditable="true">
+	<form action="/film/update" id="insertform">
+	                 <input type="text" name="filmId" id="filmId" style="display: none"> 
+	                <div class="form-group">
+	                <label class="control-label" for="textarea">title:</label>
+	                     <input type="text" id="title" name="title">
+	                </div>
+	                <div class="form-group">
+	                <label class="control-label" for="textarea">description:</label>
+	                     <textarea class="input-xlarge" id="description" name="description" rows="3"></textarea>
+	                </div>
+	                <div class="form-group">
+	                <label class="control-label" for="textarea">language:</label>
+	                     <select id="language" name="languageId">
+	                     </select>
+	                </div>
+	                <button class="btn" id="insert">UPDATE</button>
+	            </form>
+	</div>
+	<div class="modal-footer">
+	</div>
+	</div>
+	</div>
+	</div>
+</body>
+</html>
